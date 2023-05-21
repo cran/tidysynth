@@ -110,9 +110,9 @@ plot_trends <- function(data,time_window=NULL){
 
 #' plot_difference
 #'
-#' Plot the difference between the observed and sythetic control unit. The
+#' Plot the difference between the observed and synthetic control unit. The
 #' difference captures the causal quantity (i.e. the magnitude of the difference
-#' between the observed and counterfactual case).
+#' between the observed and counter-factual case).
 #'
 #' @param data nested data of type `tbl_df`.
 #' @param time_window time window of the trend plot.
@@ -120,7 +120,7 @@ plot_trends <- function(data,time_window=NULL){
 #' @return `ggplot` object of the difference between the observed and synthetic
 #'   trends.
 #'
-#' @return
+#' @return `ggplot` object of difference between the observed and synthetic control unit.
 #' @export
 #'
 #' @examples
@@ -321,7 +321,7 @@ plot_placebos <- function(data,time_window=NULL,prune=TRUE){
   if (prune){
 
     # Gather significance field
-    sig_data = data %>% grab_signficance(time_window = time_window)
+    sig_data = data %>% grab_significance(time_window = time_window)
 
     # Treated units Pre-Period RMSPE
     thres <-
@@ -547,7 +547,7 @@ plot_mspe_ratio <- function(data,time_window=NULL){
 #' @export
 plot_mspe_ratio <- function(data,time_window=NULL){
   data %>%
-    grab_signficance(time_window=time_window) %>%
+    grab_significance(time_window=time_window) %>%
     dplyr::mutate(unit_name = forcats::fct_reorder(as.character(unit_name),mspe_ratio)) %>%
     ggplot2::ggplot(ggplot2::aes(unit_name,
                                  mspe_ratio,

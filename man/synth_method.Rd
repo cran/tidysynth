@@ -12,7 +12,6 @@ synth_method(
   custom.v = NULL,
   optimxmethod = c("Nelder-Mead", "BFGS"),
   genoud = FALSE,
-  quadopt = "ipop",
   Margin.ipop = 5e-04,
   Sigf.ipop = 5,
   Bound.ipop = 10,
@@ -35,7 +34,7 @@ pre-treatment periods over which MSPE is to be minimized.}
 synth to bypass optimization for solution.V. See details.}
 
 \item{optimxmethod}{string vector that specifies the optimization algorithms
-to be used. Permissable values are all optimization algorithms that are
+to be used. Permissible values are all optimization algorithms that are
 currently implemented in the optimx function (see this function for
 details). This list currently includes c("Nelder-Mead', 'BFGS', 'CG',
 'L-BFGS-B', 'nlm', 'nlminb', 'spg', and 'ucminf"). If multiple algorithms
@@ -55,10 +54,6 @@ for a local optimization within the neighborhood of the genoud solution.
 This two step optimization procedure will require much more computing time,
 but may yield lower loss in cases where the search space is highly
 irregular.}
-
-\item{quadopt}{string vector that specifies the routine for quadratic
-optimization over w weights. possible values are "ipop" and "LowRankQP"
-(see ipop and LowRankQP for details). default is 'ipop'}
 
 \item{Margin.ipop}{setting for ipop optimization routine: how close we get to
 the constrains (see ipop for details)}
@@ -85,7 +80,7 @@ for diagnostics.
 \description{
 AUX Function: Original synthetic control method proposed by (Abadie et al.
 2003, 2010, 2015) and implemented in \code{synth} package. Method has been
-commendeered for internal use here.
+commandeered for internal use here.
 }
 \details{
 Synth works as the main engine of the \code{tidysynth} package. More on the method

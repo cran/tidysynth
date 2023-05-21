@@ -169,6 +169,7 @@ synthetic_control.data.frame <- function(data = NULL,
     # configure the outcome for the treated unit
     trt_outcome <-
       data %>%
+      dplyr::arrange(!!time) %>%
       dplyr::filter(!!time <= i_time & !!unit == i_unit) %>% # Pre-intervention period
       dplyr::select(!!time,!!unit,!!outcome) %>%
       tidyr::pivot_wider(names_from=!!unit,values_from=!!outcome) %>%
@@ -179,6 +180,7 @@ synthetic_control.data.frame <- function(data = NULL,
       data %>%
       dplyr::filter(!!time <= i_time & !!unit != i_unit) %>% # Pre-intervention period
       dplyr::select(!!time,!!unit,!!outcome) %>%
+      dplyr::arrange(!!time,!!unit) %>%
       tidyr::pivot_wider(names_from=!!unit,values_from=!!outcome) %>%
       dplyr::rename(time_unit = !!time)
 
@@ -188,8 +190,8 @@ synthetic_control.data.frame <- function(data = NULL,
                      .placebo = placebo,
                      .type = c("treated","controls"),
                      .outcome = list(trt_outcome,cnt_outcome),
-                     .original_data = list(data %>% dplyr::filter(!!unit == i_unit),
-                                           data %>% dplyr::filter(!!unit != i_unit)),
+                     .original_data = list(data %>% dplyr::arrange(!!time) %>% dplyr::filter(!!unit == i_unit),
+                                           data %>% dplyr::arrange(!!time) %>% dplyr::filter(!!unit != i_unit)),
                      .meta = list(tibble::tibble(unit_index=rlang::quo_text(unit),
                                                  time_index=rlang::quo_text(time),
                                                  treatment_unit = i_unit,
@@ -212,8 +214,8 @@ synthetic_control.data.frame <- function(data = NULL,
     data %>%
     dplyr::distinct(!!unit) %>%
     dplyr::mutate(placebo = ifelse(!!unit != i_unit,1,0)) %>%
-    dplyr::rename(unit_name = !!unit) %>%
-    dplyr::arrange(placebo)
+    dplyr::arrange(placebo, !!unit) %>%
+    dplyr::rename(unit_name = !!unit)
 
 
   # Build up dataset with treated and placebo data types
@@ -259,7 +261,7 @@ synthetic_control.data.frame <- function(data = NULL,
 #'
 #'
 #' @param data nested data of type `tbl_df` generated from
-#'   `sythetic_control()`. See `synthetic_control()` documentation for more
+#'   `synthetic_control()`. See `synthetic_control()` documentation for more
 #'   information.
 #' @param time_window set time window from the pre-intervention period that the
 #'   data should be aggregated across to generate the specific predictor.
@@ -391,9 +393,9 @@ generate_predictor <- function(data,time_window=NULL,...){
     }
 
 
-    # If a specific aggregation period is NOT specified, use the whole
+    # If a specific aggregation period is NOT specified, use the most recent year in the
     # pre-treatment period (don't use any unit in the post-treatment environment)
-    if(is.null(time_window)){ time_window <- data$.outcome[[1]]$time_unit}
+    if(is.null(time_window)){ time_window <- max(data$.outcome[[1]]$time_unit)}
 
 
     # Extract the relevant predictors for both unit types
@@ -652,22 +654,22 @@ generate_weights <-function(data,
 
 #' @export
 generate_weights <-function(data,
-                                      optimization_window = NULL,
-                                      custom_variable_weights = NULL,
-                                      include_fit = FALSE,
-                                      optimization_method = c('Nelder-Mead','BFGS'),
-                                      genoud = FALSE,
-                                      quadopt = "ipop",
-                                      margin_ipop = 5e-04,
-                                      sigf_ipop = 5,
-                                      bound_ipop = 10,
-                                      verbose = FALSE,
-                                      ...){
+                            optimization_window = NULL,
+                            custom_variable_weights = NULL,
+                            include_fit = FALSE,
+                            optimization_method = c('Nelder-Mead','BFGS'),
+                            genoud = FALSE,
+                            quadopt = "ipop",
+                            margin_ipop = 5e-04,
+                            sigf_ipop = 5,
+                            bound_ipop = 10,
+                            verbose = FALSE,
+                            ...){
 
 
   # Iterate through the versions of the data, and generate the predictors for
   # each version of the data (e.g. the treated and placebo sets) if user wants
-  # wieghts for each placebo dataset (a necessary condition for the inferential
+  # weights for each placebo dataset (a necessary condition for the inferential
   # strategy)
 
   # Grab data versions
@@ -761,7 +763,7 @@ generate_weights <-function(data,
 #'   optimization over w weights. possible values are "ipop" and "LowRankQP"
 #'   (see ipop and LowRankQP for details). default is 'ipop'
 #' @param Margin.ipop setting for ipop optimization routine: how close we get to
-#'   the constrains (see ipop for details)
+#'   the constraints (see ipop for details)
 #' @param Sigf.ipop setting for ipop optimization routine: Precision (default: 7
 #'   significant figures (see ipop for details)
 #' @param Bound.ipop setting for ipop optimization routine: Clipping bound for
@@ -790,7 +792,7 @@ synth_weights <- function(data,
 
   # If no temporal window is set to use in the optimization task, use the entire
   # pretreatment period
-  if(is.null(time_window)){ time_window <- data$.outcome[[1]]$time_unit }
+  if(is.null(time_window)){ time_window <- max(data$.outcome[[1]]$time_unit)}
 
   # If placebo out version of the grab_ function, clear unnecessary fields
   is_placebo = ifelse(any(data$.placebo == 1),T,F)
@@ -1037,7 +1039,7 @@ generate_control <- function(data){
       dplyr::select(-unit) %>%
       as.matrix()
 
-    # coutcome time series for the control units
+    # outcome time series for the control units
     outcome_controls <-
       data %>%
       dplyr::filter(.placebo == is_placebo,.type=="controls") %>%
@@ -1071,7 +1073,7 @@ generate_control <- function(data){
                        real_y = outcome_treatment$y,
                        synth_y = weight)
 
-    # Join the synetic control the nested frame and return
+    # Join the synthetic control the nested frame and return
     out <-
       data %>%
       dplyr::mutate(.synthetic_control = list(synthetic_output,synthetic_output)) %>%
