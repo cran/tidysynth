@@ -330,7 +330,6 @@ synthetic_control.data.frame <- function(data = NULL,
 #' smoking_out %>% grab_predictors(type = "controls")
 #'
 #' }
-#'
 generate_predictor <- function(data,time_window=NULL,...){
   UseMethod("generate_predictor")
 }
@@ -563,8 +562,7 @@ generate_predictor <- function(data,time_window=NULL,...){
 #'   format for the optimization task.
 #'
 #'   - `.unit_weights`: Nested column of unit weights (i.e. how each unit from
-#'   the donor pool contributes to the synthetic control). Weights should sum to
-#'   1.
+#'   the donor pool contributes to the synthetic control). Weights should sum to 1.
 #'
 #'   - `.predictor_weights`: Nested column of predictor variable weights (i.e.
 #'   the significance of each predictor in optimizing the weights that generate
@@ -636,7 +634,6 @@ generate_predictor <- function(data,time_window=NULL,...){
 #' smoking_out %>% plot_weights()
 #'
 #' }
-#'
 generate_weights <-function(data,
                             optimization_window = NULL,
                             custom_variable_weights = NULL,
@@ -898,10 +895,10 @@ synth_weights <- function(data,
 #' generate_control
 #'
 #' Uses the weights generated from `generate_weights()` to weight control units
-#' from the donor pool to denerate a synthetic version of the treated unit time
+#' from the donor pool to generate a synthetic version of the treated unit time
 #' series.
 #'
-#' @param data nested data of type `tbl_df` generated from `sythetic_control()`.
+#' @param data nested data of type `tbl_df` generated from `synthetic_control()`.
 #'   See `synthetic_control()` documentation for more information. In addition,
 #'   `.unit_weights` must be generate using `generate_weights()`. See
 #'   documentation for more information on how to generate weights.
@@ -929,8 +926,7 @@ synth_weights <- function(data,
 #'   control version of the outcome variable generated from the unit weights.
 #'
 #'   - `.unit_weights`: Nested column of unit weights (i.e. how each unit from
-#'   the donor pool contributes to the synthetic control). Weights should sum to
-#'   1.
+#'   the donor pool contributes to the synthetic control). Weights should sum to 1.
 #'
 #'   - `.predictor_weights`: Nested column of predictor variable weights (i.e.
 #'   the significance of each predictor in optimizing the weights that generate
@@ -997,7 +993,6 @@ synth_weights <- function(data,
 #' smoking_out %>% plot_trends(time_window = 1970:2000)
 #'
 #' }
-#'
 generate_control <- function(data){
   UseMethod("generate_control")
 }

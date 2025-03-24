@@ -7,7 +7,7 @@
 generate_control(data)
 }
 \arguments{
-\item{data}{nested data of type \code{tbl_df} generated from \code{sythetic_control()}.
+\item{data}{nested data of type \code{tbl_df} generated from \code{synthetic_control()}.
 See \code{synthetic_control()} documentation for more information. In addition,
 \code{.unit_weights} must be generate using \code{generate_weights()}. See
 documentation for more information on how to generate weights.}
@@ -30,12 +30,7 @@ format for the optimization task.
 \item \code{.synthetic_control}: nested data construct containing the synthetic
 control version of the outcome variable generated from the unit weights.
 \item \code{.unit_weights}: Nested column of unit weights (i.e. how each unit from
-the donor pool contributes to the synthetic control). Weights should sum to
-}
-\enumerate{
-\item 
-}
-\itemize{
+the donor pool contributes to the synthetic control). Weights should sum to 1.
 \item \code{.predictor_weights}: Nested column of predictor variable weights (i.e.
 the significance of each predictor in optimizing the weights that generate
 the synthetic control). Weights should sum to 1. If variable weights are
@@ -51,7 +46,7 @@ in subsequent functions.
 }
 \description{
 Uses the weights generated from \code{generate_weights()} to weight control units
-from the donor pool to denerate a synthetic version of the treated unit time
+from the donor pool to generate a synthetic version of the treated unit time
 series.
 }
 \examples{
@@ -102,5 +97,4 @@ synthetic_control(outcome = cigsale,
 smoking_out \%>\% plot_trends(time_window = 1970:2000)
 
 }
-
 }

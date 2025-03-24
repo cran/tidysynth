@@ -90,5 +90,4 @@ smoking_out \%>\% grab_predictors(type = "treated")
 smoking_out \%>\% grab_predictors(type = "controls")
 
 }
-
 }

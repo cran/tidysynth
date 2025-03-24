@@ -96,12 +96,7 @@ format for the optimization task.
 for the treated and control (donor) units. Data is configured into a wide
 format for the optimization task.
 \item \code{.unit_weights}: Nested column of unit weights (i.e. how each unit from
-the donor pool contributes to the synthetic control). Weights should sum to
-}
-\enumerate{
-\item 
-}
-\itemize{
+the donor pool contributes to the synthetic control). Weights should sum to 1.
 \item \code{.predictor_weights}: Nested column of predictor variable weights (i.e.
 the significance of each predictor in optimizing the weights that generate
 the synthetic control). Weights should sum to 1. If variable weights are
@@ -215,5 +210,4 @@ smoking_out \%>\% grab_unit_weights(placebo= TRUE)
 smoking_out \%>\% plot_weights()
 
 }
-
 }
